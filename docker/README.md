@@ -15,15 +15,24 @@
 ## 3、启动BEFAQ服务
     进入项目根目录
     cd /projects/BERT-Embedding-Frequently-Asked-Question/
-    进入src文件夹
-    cd src
+    cd es
+    将数据从excel中的数据写到Es 
+    python write_data2es.py
+
+    将问题处理成Sentence BERT 向量，保存到bin类型文件中，便于后期读取问题的向量。
+    python write_vecs2bin.py
+
+    训练Faiss和Annoy模型
+    python train_search_model.py
+
+    进入src文件夹,启动BEFAQ服务
+    cd ../src
     python main_faq.py
     或者在后台中启动
     nohup python -u main_faq.py > "../logs/log_$(date +"%Y-%m-%d-%H").txt" 2>&1 &
-    nohup python -u main_faq.py >/dev/null 2>&1 &
     在终端中测试联想功能。服务是post请求。(如果不是本机，请将127.0.0.1替换成自己的ip)
     curl -d "question=忘记原始密码如何修改密码？&get_num=3&threshold=0.5&owner_name=领域1"   http://127.0.0.1:8129/BEFAQ
-    如何手动killBEFAQ服务
+    如何手动kill BEFAQ服务
     kill -9 $(lsof -i:8129 -t)
 ## 4、启动BEFAQ的联想词接口服务
     cd /projects/BEFAQ
